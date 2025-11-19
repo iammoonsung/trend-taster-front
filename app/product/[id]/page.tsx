@@ -11,6 +11,9 @@ import { ArrowLeft, Share2, Flag, Loader2 } from 'lucide-react'
 import { ProductCard } from '@/components/product-card'
 import { useProduct, useProducts } from '@/lib/api/hooks'
 
+// Edge Runtime for Cloudflare Pages
+export const runtime = 'edge'
+
 export default function ProductDetailPage({
   params,
 }: {

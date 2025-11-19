@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { Analytics } from '@vercel/analytics/next'
 import { QueryProvider } from '@/lib/providers/query-provider'
 import './globals.css'
 
@@ -45,7 +44,6 @@ export default function RootLayout({
         <QueryProvider>
           {children}
         </QueryProvider>
-        <Analytics />
       </body>
     </html>
   )
