@@ -1,5 +1,7 @@
 name = "trend-taster-front"
 compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+node_compat = true
 pages_build_output_dir = ".vercel/output/static"
 
 [env.production]
