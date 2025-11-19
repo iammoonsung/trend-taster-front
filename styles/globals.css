@@ -1,0 +1,273 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+/* Pretendard Font - Korean Typography */
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 300;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Light.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 500;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Medium.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 600;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-SemiBold.woff') format('woff');
+}
+
+/* Premium Design System - 오늘의신상 */
+:root {
+  /* Primary Colors - Sophisticated & Refined */
+  --background: oklch(0.98 0 0); /* Off-white #FAFAFA */
+  --foreground: oklch(0.15 0 0); /* Deep Charcoal #1A1A1A */
+  --card: oklch(1 0 0); /* Pure White #FFFFFF */
+  --card-foreground: oklch(0.15 0 0); /* Deep Charcoal */
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.15 0 0);
+
+  /* Primary: Deep Charcoal */
+  --primary: oklch(0.15 0 0); /* #1A1A1A */
+  --primary-foreground: oklch(1 0 0); /* White */
+
+  /* Secondary: Warm Gray */
+  --secondary: oklch(0.95 0 0); /* Light gray for secondary bg */
+  --secondary-foreground: oklch(0.48 0 0); /* #6B6B6B */
+
+  /* Muted: For subtle backgrounds */
+  --muted: oklch(0.96 0 0);
+  --muted-foreground: oklch(0.62 0 0); /* Medium Gray #9E9E9E */
+
+  /* Accent: Muted Gold/Bronze (used sparingly) */
+  --accent: oklch(0.65 0.08 85); /* #B8956A */
+  --accent-foreground: oklch(1 0 0);
+
+  /* Semantic Colors - Muted tones */
+  --destructive: oklch(0.52 0.12 20); /* Muted Red #A85A5A */
+  --destructive-foreground: oklch(1 0 0);
+  --success: oklch(0.52 0.08 140); /* Muted Green #5A7A5A */
+  --success-foreground: oklch(1 0 0);
+  --warning: oklch(0.65 0.08 85); /* Warm Amber - same as accent */
+  --warning-foreground: oklch(0.15 0 0);
+  --info: oklch(0.48 0.08 250); /* Slate Blue #5A6B7A */
+  --info-foreground: oklch(1 0 0);
+
+  /* Borders & Inputs */
+  --border: oklch(0.91 0 0); /* Light gray #E5E5E5 */
+  --input: oklch(0.91 0 0);
+  --ring: oklch(0.48 0 0); /* Warm Gray for focus */
+
+  /* Store Brand Colors (Muted & Refined) */
+  --store-cu: oklch(0.40 0.12 285); /* Deep Purple #5A4A7A */
+  --store-gs25: oklch(0.35 0.10 240); /* Navy Blue #2A4A6A */
+  --store-7eleven: oklch(0.40 0.08 160); /* Forest Green #3A5A4A */
+  --store-emart24: oklch(0.60 0.10 85); /* Mustard Yellow #9A8A4A */
+
+  /* Charts (refined palette) */
+  --chart-1: oklch(0.48 0.12 285); /* CU Purple */
+  --chart-2: oklch(0.35 0.10 240); /* GS25 Navy */
+  --chart-3: oklch(0.40 0.08 160); /* 7-Eleven Green */
+  --chart-4: oklch(0.60 0.10 85); /* Emart24 Mustard */
+  --chart-5: oklch(0.65 0.08 85); /* Accent Gold */
+
+  /* Border Radius - Sharp & Modern (4-8px) */
+  --radius: 0.25rem; /* 4px - primary radius */
+
+  /* Sidebar */
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0.15 0 0);
+  --sidebar-primary: oklch(0.15 0 0);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.96 0 0);
+  --sidebar-accent-foreground: oklch(0.15 0 0);
+  --sidebar-border: oklch(0.91 0 0);
+  --sidebar-ring: oklch(0.48 0 0);
+}
+
+/* Dark Mode - Premium Dark Theme */
+.dark {
+  --background: oklch(0.15 0 0); /* Deep Charcoal background */
+  --foreground: oklch(0.98 0 0); /* Off-white text */
+  --card: oklch(0.20 0 0); /* Slightly lighter than background */
+  --card-foreground: oklch(0.98 0 0);
+  --popover: oklch(0.20 0 0);
+  --popover-foreground: oklch(0.98 0 0);
+
+  /* Primary: Light text on dark */
+  --primary: oklch(0.98 0 0);
+  --primary-foreground: oklch(0.15 0 0);
+
+  /* Secondary: Darker gray */
+  --secondary: oklch(0.28 0 0);
+  --secondary-foreground: oklch(0.85 0 0);
+
+  /* Muted */
+  --muted: oklch(0.25 0 0);
+  --muted-foreground: oklch(0.70 0 0);
+
+  /* Accent: Brighter gold in dark mode */
+  --accent: oklch(0.70 0.10 85);
+  --accent-foreground: oklch(0.15 0 0);
+
+  /* Semantic colors - adjusted for dark */
+  --destructive: oklch(0.55 0.15 20);
+  --destructive-foreground: oklch(0.98 0 0);
+  --success: oklch(0.58 0.12 140);
+  --success-foreground: oklch(0.98 0 0);
+  --warning: oklch(0.70 0.10 85);
+  --warning-foreground: oklch(0.15 0 0);
+  --info: oklch(0.55 0.12 250);
+  --info-foreground: oklch(0.98 0 0);
+
+  /* Borders - subtle in dark mode */
+  --border: oklch(0.28 0 0);
+  --input: oklch(0.28 0 0);
+  --ring: oklch(0.60 0 0);
+
+  /* Store colors remain the same - they work well in dark */
+
+  /* Charts - slightly brighter for dark mode */
+  --chart-1: oklch(0.55 0.15 285);
+  --chart-2: oklch(0.45 0.15 240);
+  --chart-3: oklch(0.50 0.12 160);
+  --chart-4: oklch(0.65 0.12 85);
+  --chart-5: oklch(0.70 0.10 85);
+
+  /* Sidebar */
+  --sidebar: oklch(0.18 0 0);
+  --sidebar-foreground: oklch(0.98 0 0);
+  --sidebar-primary: oklch(0.55 0.15 285);
+  --sidebar-primary-foreground: oklch(0.98 0 0);
+  --sidebar-accent: oklch(0.25 0 0);
+  --sidebar-accent-foreground: oklch(0.98 0 0);
+  --sidebar-border: oklch(0.28 0 0);
+  --sidebar-ring: oklch(0.60 0 0);
+}
+
+@theme inline {
+  --font-sans: 'Pretendard', 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mono: 'Geist Mono', 'SF Mono', Consolas, monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Typography - Generous line-height for readability */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-medium;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+
+  p, li, td {
+    line-height: 1.7;
+  }
+
+  /* Smooth transitions */
+  button, a, input, select, textarea {
+    transition: all 200ms ease;
+  }
+
+  /* Focus states - subtle and professional */
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* Remove button default styles */
+  button {
+    @apply focus-visible:outline-none;
+  }
+
+  /* Link styles */
+  a {
+    @apply text-foreground no-underline;
+  }
+
+  /* Image optimization */
+  img {
+    @apply max-w-full h-auto;
+  }
+
+  /* Scrollbar styling (webkit browsers) */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-background;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border rounded;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/30;
+  }
+}
