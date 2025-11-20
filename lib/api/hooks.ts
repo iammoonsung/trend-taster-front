@@ -325,3 +325,38 @@ export function useRejectStore() {
     },
   })
 }
+
+// Product Update Submission Hooks
+export function usePendingProductUpdates() {
+  return useQuery({
+    queryKey: ['admin', 'product-updates'] as const,
+    queryFn: () => apiClient.getPendingProductUpdates(),
+    enabled: !!apiClient.getToken(),
+  })
+}
+
+export function useApproveProductUpdate() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => apiClient.approveProductUpdate(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'product-updates'] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.products.all })
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.stats })
+    },
+  })
+}
+
+export function useRejectProductUpdate() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, reason }: { id: string; reason: string }) =>
+      apiClient.rejectProductUpdate(id, reason),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'product-updates'] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.stats })
+    },
+  })
+}

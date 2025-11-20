@@ -9,7 +9,8 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { ArrowLeft, Share2, Flag, Loader2 } from 'lucide-react'
 import { ProductCard } from '@/components/product-card'
-import { useProduct, useProducts } from '@/lib/api/hooks'
+import { ProductEditButton } from '@/components/product-edit-button'
+import { useProduct, useProducts, useCurrentUser } from '@/lib/api/hooks'
 
 // Edge Runtime for Cloudflare Pages
 export const runtime = 'edge'
@@ -21,6 +22,7 @@ export default function ProductDetailPage({
 }) {
   const { id } = use(params)
   const { data: product, isLoading, error } = useProduct(id)
+  const { data: currentUser } = useCurrentUser()
   const { data: productsResponse } = useProducts({ categories: product?.category ? [product.category] : undefined })
   
   // Get similar products (same category, different id)
@@ -161,15 +163,20 @@ export default function ProductDetailPage({
             </div>
 
             {/* Actions */}
-            <div className="flex gap-3 pt-4">
-              <Button onClick={handleShare} className="flex-1">
-                <Share2 className="mr-2 h-4 w-4" />
-                공유하기
-              </Button>
-              <Button variant="outline" size="icon">
-                <Flag className="h-4 w-4" />
-                <span className="sr-only">신고하기</span>
-              </Button>
+            <div className="flex flex-col gap-3 pt-4">
+              <div className="flex gap-3">
+                <Button onClick={handleShare} className="flex-1">
+                  <Share2 className="mr-2 h-4 w-4" />
+                  공유하기
+                </Button>
+                <Button variant="outline" size="icon">
+                  <Flag className="h-4 w-4" />
+                  <span className="sr-only">신고하기</span>
+                </Button>
+              </div>
+              {currentUser && product.submittedBy === currentUser.username && (
+                <ProductEditButton product={product} isOwner={true} />
+              )}
             </div>
 
             <div className="border-t pt-6 space-y-4">

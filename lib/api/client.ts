@@ -202,8 +202,8 @@ class ApiClient {
     })
   }
 
-  async updateProduct(id: string, data: ProductUpdateRequest): Promise<Product> {
-    return this.request<Product>(`/products/${id}`, {
+  async updateProduct(id: string, data: ProductUpdateRequest): Promise<import('@/lib/types/api').ProductUpdateSubmission> {
+    return this.request<import('@/lib/types/api').ProductUpdateSubmission>(`/products/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
     })
@@ -342,6 +342,24 @@ class ApiClient {
 
   async rejectStore(id: string, reason: string): Promise<import('@/lib/types/api').Store> {
     return this.request<import('@/lib/types/api').Store>(`/admin/stores/submissions/${id}/reject`, {
+      method: 'POST',
+      body: JSON.stringify({ reason }),
+    })
+  }
+
+  // Product Update Submissions
+  async getPendingProductUpdates(): Promise<import('@/lib/types/api').ProductUpdateSubmission[]> {
+    return this.request<import('@/lib/types/api').ProductUpdateSubmission[]>('/admin/product-updates')
+  }
+
+  async approveProductUpdate(id: string): Promise<Product> {
+    return this.request<Product>(`/admin/product-updates/${id}/approve`, {
+      method: 'POST',
+    })
+  }
+
+  async rejectProductUpdate(id: string, reason: string): Promise<void> {
+    return this.request<void>(`/admin/product-updates/${id}/reject`, {
       method: 'POST',
       body: JSON.stringify({ reason }),
     })

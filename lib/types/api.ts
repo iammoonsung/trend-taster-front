@@ -138,8 +138,30 @@ export interface AdminStats {
   approvedProducts: number
   pendingStores: number
   approvedStores: number
+  pendingUpdateSubmissions: number
   totalUsers: number
   adminUsers: number
+}
+
+export interface ProductUpdateSubmission {
+  id: string
+  productId: string
+  productName: string
+  name: string | null
+  store: string | null
+  price: number | null
+  category: string | null
+  releaseDate: string | null
+  description: string | null
+  ingredients: string | null
+  barcode: string | null
+  location: string | null
+  status: 'pending' | 'approved' | 'rejected'
+  submittedBy: string | null
+  reviewedBy: string | null
+  rejectionReason: string | null
+  createdAt: string
+  updatedAt: string
 }
 
 // Store/Brand related types

@@ -38,9 +38,12 @@ import {
   useSearchUsers,
   usePromoteToAdmin,
   useDemoteFromAdmin,
-  useAdminStats
+  useAdminStats,
+  usePendingProductUpdates,
+  useApproveProductUpdate,
+  useRejectProductUpdate
 } from '@/lib/api/hooks'
-import type { Store, Product } from '@/lib/types/api'
+import type { Store, Product, ProductUpdateSubmission } from '@/lib/types/api'
 import { useRouter } from 'next/navigation'
 
 
@@ -98,6 +101,16 @@ export default function AdminPage() {
   // Store states
   const [selectedStore, setSelectedStore] = useState<Store | null>(null)
   const [isStoreRejectDialogOpen, setIsStoreRejectDialogOpen] = useState(false)
+
+  // Product update hooks
+  const { data: pendingUpdates, isLoading: isLoadingUpdates } = usePendingProductUpdates()
+  const approveUpdateMutation = useApproveProductUpdate()
+  const rejectUpdateMutation = useRejectProductUpdate()
+
+  // Product update states
+  const [selectedUpdate, setSelectedUpdate] = useState<ProductUpdateSubmission | null>(null)
+  const [isUpdateRejectDialogOpen, setIsUpdateRejectDialogOpen] = useState(false)
+  const [updateRejectReason, setUpdateRejectReason] = useState('')
   const [storeRejectReason, setStoreRejectReason] = useState('')
 
   // User management states
@@ -212,6 +225,37 @@ export default function AdminPage() {
     }
   }
 
+  // Product update handlers
+  const handleApproveUpdate = async (updateId: string) => {
+    if (!confirm('이 수정 요청을 승인하시겠습니까?')) return
+
+    try {
+      await approveUpdateMutation.mutateAsync(updateId)
+      alert('수정 요청이 승인되었습니다.')
+    } catch (error: any) {
+      alert(error.message || '승인에 실패했습니다.')
+    }
+  }
+
+  const handleRejectUpdate = async () => {
+    if (!selectedUpdate) return
+
+    if (!updateRejectReason.trim()) {
+      alert('거부 사유를 입력해주세요.')
+      return
+    }
+
+    try {
+      await rejectUpdateMutation.mutateAsync({ id: selectedUpdate.id, reason: updateRejectReason })
+      setIsUpdateRejectDialogOpen(false)
+      setUpdateRejectReason('')
+      setSelectedUpdate(null)
+      alert('수정 요청이 거부되었습니다.')
+    } catch (error: any) {
+      alert(error.message || '거부에 실패했습니다.')
+    }
+  }
+
   const adminUsers = searchedUsers.filter(u => u.role === 'admin' || u.role === 'super_admin')
 
   if (isLoading) {
@@ -236,7 +280,7 @@ export default function AdminPage() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">대기 중 제품</CardTitle>
@@ -244,6 +288,16 @@ export default function AdminPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{adminStats?.pendingSubmissions || 0}</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium">수정 요청</CardTitle>
+              <Package className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{adminStats?.pendingUpdateSubmissions || 0}</div>
             </CardContent>
           </Card>
 
@@ -299,8 +353,9 @@ export default function AdminPage() {
         </div>
 
         <Tabs defaultValue="products" className="w-full">
-          <TabsList className={`grid w-full max-w-2xl ${currentUser?.role === 'super_admin' ? 'grid-cols-3' : 'grid-cols-2'}`}>
+          <TabsList className={`grid w-full max-w-3xl ${currentUser?.role === 'super_admin' ? 'grid-cols-4' : 'grid-cols-3'}`}>
             <TabsTrigger value="products">제품 승인</TabsTrigger>
+            <TabsTrigger value="updates">수정 요청</TabsTrigger>
             <TabsTrigger value="stores">매장/브랜드 승인</TabsTrigger>
             {currentUser?.role === 'super_admin' && (
               <TabsTrigger value="users">관리자 관리</TabsTrigger>
@@ -443,6 +498,119 @@ export default function AdminPage() {
                         </Pagination>
                       </div>
                     )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Product Updates Tab */}
+          <TabsContent value="updates" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>제품 수정 요청 ({pendingUpdates?.length || 0})</CardTitle>
+                <CardDescription>사용자가 제출한 제품 수정 요청을 검토하고 승인 또는 거부하세요</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {isLoadingUpdates ? (
+                  <div className="text-center py-12">
+                    <p className="text-muted-foreground">로딩 중...</p>
+                  </div>
+                ) : !pendingUpdates || pendingUpdates.length === 0 ? (
+                  <div className="text-center py-12">
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+                      <CheckCircle2 className="w-8 h-8 text-primary" />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">모든 수정 요청을 확인했습니다!</h3>
+                    <p className="text-muted-foreground">현재 대기 중인 수정 요청이 없습니다.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {pendingUpdates.map((update) => (
+                      <div
+                        key={update.id}
+                        className="p-4 rounded-lg border hover:bg-accent/50 transition-colors"
+                      >
+                        <div className="space-y-4">
+                          <div className="flex items-start justify-between gap-4">
+                            <div>
+                              <h3 className="font-semibold text-lg mb-1">
+                                {update.productName}
+                              </h3>
+                              <div className="flex flex-wrap gap-2 text-sm text-muted-foreground">
+                                <span>제출자: {update.submittedBy}</span>
+                                <span>•</span>
+                                <span>{new Date(update.createdAt).toLocaleDateString('ko-KR')}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            {update.name && (
+                              <div>
+                                <span className="font-medium">제품명:</span> {update.name}
+                              </div>
+                            )}
+                            {update.store && (
+                              <div>
+                                <span className="font-medium">매장:</span> {update.store}
+                              </div>
+                            )}
+                            {update.price !== null && (
+                              <div>
+                                <span className="font-medium">가격:</span> {update.price.toLocaleString('ko-KR')}원
+                              </div>
+                            )}
+                            {update.category && (
+                              <div>
+                                <span className="font-medium">카테고리:</span> {update.category}
+                              </div>
+                            )}
+                            {update.releaseDate && (
+                              <div>
+                                <span className="font-medium">출시일:</span> {new Date(update.releaseDate).toLocaleDateString('ko-KR')}
+                              </div>
+                            )}
+                          </div>
+
+                          {update.description && (
+                            <div className="text-sm">
+                              <span className="font-medium">설명:</span>
+                              <p className="mt-1 text-muted-foreground">{update.description}</p>
+                            </div>
+                          )}
+
+                          {update.ingredients && (
+                            <div className="text-sm">
+                              <span className="font-medium">원재료:</span>
+                              <p className="mt-1 text-muted-foreground">{update.ingredients}</p>
+                            </div>
+                          )}
+
+                          <div className="flex gap-2 pt-2">
+                            <Button
+                              onClick={() => handleApproveUpdate(update.id)}
+                              className="gradient-bg"
+                              disabled={approveUpdateMutation.isPending}
+                            >
+                              <CheckCircle2 className="mr-2 h-4 w-4" />
+                              승인
+                            </Button>
+                            <Button
+                              variant="destructive"
+                              onClick={() => {
+                                setSelectedUpdate(update)
+                                setIsUpdateRejectDialogOpen(true)
+                              }}
+                              disabled={rejectUpdateMutation.isPending}
+                            >
+                              <XCircle className="mr-2 h-4 w-4" />
+                              거부
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )}
               </CardContent>
@@ -956,6 +1124,44 @@ export default function AdminPage() {
               variant="destructive"
               onClick={handleRejectStore}
               disabled={rejectStoreMutation.isPending}
+            >
+              거부 확정
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Product Update Reject Dialog */}
+      <Dialog open={isUpdateRejectDialogOpen} onOpenChange={setIsUpdateRejectDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>제품 수정 요청 거부</DialogTitle>
+            <DialogDescription>
+              제품 수정 요청을 거부하는 이유를 입력해주세요. 이 내용은 제출자에게 전달됩니다.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="update-reject-reason">거부 사유</Label>
+              <Textarea
+                id="update-reject-reason"
+                placeholder="예: 제공된 정보가 부정확합니다. 또는 추가 검증이 필요합니다."
+                value={updateRejectReason}
+                onChange={(e) => setUpdateRejectReason(e.target.value)}
+                rows={4}
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsUpdateRejectDialogOpen(false)}>
+              취소
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleRejectUpdate}
+              disabled={rejectUpdateMutation.isPending}
             >
               거부 확정
             </Button>
