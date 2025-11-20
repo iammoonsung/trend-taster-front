@@ -299,10 +299,12 @@ export default function AdminPage() {
         </div>
 
         <Tabs defaultValue="products" className="w-full">
-          <TabsList className="grid w-full max-w-2xl grid-cols-3">
+          <TabsList className={`grid w-full max-w-2xl ${currentUser?.role === 'super_admin' ? 'grid-cols-3' : 'grid-cols-2'}`}>
             <TabsTrigger value="products">제품 승인</TabsTrigger>
             <TabsTrigger value="stores">매장/브랜드 승인</TabsTrigger>
-            <TabsTrigger value="users">관리자 관리</TabsTrigger>
+            {currentUser?.role === 'super_admin' && (
+              <TabsTrigger value="users">관리자 관리</TabsTrigger>
+            )}
           </TabsList>
 
           {/* Products Tab */}

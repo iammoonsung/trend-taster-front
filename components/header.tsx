@@ -3,10 +3,11 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Plus, Menu, LogOut, User, Store, Sparkles } from 'lucide-react'
+import { Plus, Menu, LogOut, User, Store, Sparkles, Pencil } from 'lucide-react'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { useState, useEffect } from 'react'
 import { useCurrentUser, useLogout } from '@/lib/api/hooks'
+import { ProfileEditDialog } from '@/components/profile-edit-dialog'
 
 export function Header() {
   const router = useRouter()
@@ -74,6 +75,19 @@ export function Header() {
                   <User className="h-4 w-4 text-primary" />
                   <span className="text-sm font-semibold text-primary">{currentUser.username}</span>
                 </div>
+                <ProfileEditDialog
+                  user={currentUser}
+                  trigger={
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="hover:bg-primary/10 hover:text-primary transition-colors"
+                    >
+                      <Pencil className="h-4 w-4" />
+                      <span className="sr-only">프로필 수정</span>
+                    </Button>
+                  }
+                />
                 <Button
                   variant="ghost"
                   className="font-medium hover:bg-destructive/10 hover:text-destructive transition-colors"
@@ -103,14 +117,30 @@ export function Header() {
           <SheetContent side="right" className="border-l border-primary/20">
             <div className="flex flex-col space-y-4 mt-8">
               {mounted && currentUser && (
-                <div className="flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-primary/10 to-accent/30 border border-primary/20 mb-2">
-                  <div className="w-10 h-10 rounded-full gradient-bg flex items-center justify-center shadow-lg">
-                    <User className="h-5 w-5 text-white" />
+                <div className="space-y-2 mb-2">
+                  <div className="flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-primary/10 to-accent/30 border border-primary/20">
+                    <div className="w-10 h-10 rounded-full gradient-bg flex items-center justify-center shadow-lg">
+                      <User className="h-5 w-5 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-semibold text-foreground">{currentUser.username}</p>
+                      <p className="text-xs text-muted-foreground">{currentUser.email}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-semibold text-foreground">{currentUser.username}</p>
-                    <p className="text-xs text-muted-foreground">{currentUser.email}</p>
-                  </div>
+                  <ProfileEditDialog
+                    user={currentUser}
+                    trigger={
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full justify-start border-primary/20 hover:bg-primary/5"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <Pencil className="mr-2 h-3.5 w-3.5" />
+                        프로필 수정
+                      </Button>
+                    }
+                  />
                 </div>
               )}
 

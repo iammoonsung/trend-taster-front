@@ -152,6 +152,13 @@ class ApiClient {
     return this.request<User>('/auth/me')
   }
 
+  async updateProfile(data: import('@/lib/types/api').UpdateProfileRequest): Promise<User> {
+    return this.request<User>('/auth/profile', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    })
+  }
+
   // Product endpoints
   async getProducts(filters?: ProductFilters): Promise<PaginatedResponse<Product>> {
     const params = new URLSearchParams()

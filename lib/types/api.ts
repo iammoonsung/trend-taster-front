@@ -62,6 +62,10 @@ export interface RegisterRequest {
   password: string
 }
 
+export interface UpdateProfileRequest {
+  username?: string
+}
+
 export interface ProductSubmitRequest {
   name: string
   store: string

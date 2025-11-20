@@ -106,7 +106,7 @@ export default function ProductDetailPage({
             {product.images && product.images.length > 0 ? (
               <div className="grid grid-cols-1 gap-4">
                 {product.images.map((img, index) => (
-                  <div key={img.id} className="relative aspect-square rounded-2xl overflow-hidden bg-muted">
+                  <div key={img.id} className="relative aspect-[4/3] md:aspect-square rounded-2xl overflow-hidden bg-muted">
                     <Image
                       src={img.imageUrl}
                       alt={`${product.name} - 이미지 ${index + 1}`}
@@ -123,7 +123,7 @@ export default function ProductDetailPage({
                 ))}
               </div>
             ) : (
-              <div className="relative aspect-square rounded-2xl overflow-hidden bg-muted">
+              <div className="relative aspect-[4/3] md:aspect-square rounded-2xl overflow-hidden bg-muted">
                 <Image
                   src="/placeholder.svg"
                   alt={product.name}

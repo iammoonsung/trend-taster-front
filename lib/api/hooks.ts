@@ -76,6 +76,17 @@ export function useLogout() {
   })
 }
 
+export function useUpdateProfile() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (data: import('@/lib/types/api').UpdateProfileRequest) => apiClient.updateProfile(data),
+    onSuccess: (updatedUser) => {
+      queryClient.setQueryData(queryKeys.auth.currentUser, updatedUser)
+    },
+  })
+}
+
 // Product Hooks
 export function useProducts(filters?: ProductFilters) {
   return useQuery({
